@@ -17,6 +17,7 @@ pub fn build(b: *std.Build) void {
         "src-docking/imgui.cpp",
     };
     const docking_h_file = "src-docking/cimgui.h";
+    const docking_internal_h_file = "src-docking/imgui_internal.h";
 
     // these are the files to use for no docking
     const non_docking_cpp_files = &.{
@@ -53,6 +54,7 @@ pub fn build(b: *std.Build) void {
     // any Emscripten header search path shenanigans
     const translateC = b.addTranslateC(.{
         .root_source_file = b.path(if (opt_with_docking) docking_h_file else non_docking_h_file),
+        .additional_source_files = if (opt_with_docking) &[_][]const u8{b.path(docking_internal_h_file)} else &[_][]const u8{},
         .target = b.graph.host,
         .optimize = optimize,
     });
