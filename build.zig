@@ -18,18 +18,29 @@ pub fn build(b: *std.Build) void {
     });
     lib_cimgui.linkLibCpp();
 
-    const folder_name = if (opt_with_docking) "src" else "src-docking";
-    lib_cimgui.addCSourceFiles(.{
-        .files = &.{
-            folder_name ++ "/cimgui.cpp",
-            folder_name ++ "/imgui_demo.cpp",
-            folder_name ++ "/imgui_draw.cpp",
-            folder_name ++ "/imgui_tables.cpp",
-            folder_name ++ "/imgui_widgets.cpp",
-            folder_name ++ "/imgui.cpp",
-        },
-    });
-
+    if (opt_with_docking) {
+        lib_cimgui.addCSourceFiles(.{
+            .files = &.{
+                "src-docking/cimgui.cpp",
+                "src-docking/imgui_demo.cpp",
+                "src-docking/imgui_draw.cpp",
+                "src-docking/imgui_tables.cpp",
+                "src-docking/imgui_widgets.cpp",
+                "src-docking/imgui.cpp",
+            },
+        });
+    } else {
+        lib_cimgui.addCSourceFiles(.{
+            .files = &.{
+                "src/cimgui.cpp",
+                "src/imgui_demo.cpp",
+                "src/imgui_draw.cpp",
+                "src/imgui_tables.cpp",
+                "src/imgui_widgets.cpp",
+                "src/imgui.cpp",
+            },
+        });
+    }
     // make cimgui available as artifact, this allows to inject
     // the Emscripten sysroot include path in another build.zig
     b.installArtifact(lib_cimgui);
