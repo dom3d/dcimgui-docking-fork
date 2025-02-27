@@ -5,6 +5,8 @@ const std = @import("std");
 const builtin = @import("builtin");
 
 pub fn build(b: *std.Build) void {
+    const opt_with_docking = b.option(bool, "with_docking", "Uses the docking branch of (c)ImGui") orelse false;
+
     const target = b.standardTargetOptions(.{});
     const optimize = b.standardOptimizeOption(.{});
 
@@ -15,14 +17,16 @@ pub fn build(b: *std.Build) void {
         .link_libc = true,
     });
     lib_cimgui.linkLibCpp();
+
+    const folder_name = if (opt_with_docking) "src" else "src-docking";
     lib_cimgui.addCSourceFiles(.{
         .files = &.{
-            "src/cimgui.cpp",
-            "src/imgui_demo.cpp",
-            "src/imgui_draw.cpp",
-            "src/imgui_tables.cpp",
-            "src/imgui_widgets.cpp",
-            "src/imgui.cpp",
+            folder_name ++ "/cimgui.cpp",
+            folder_name ++ "/imgui_demo.cpp",
+            folder_name ++ "/imgui_draw.cpp",
+            folder_name ++ "/imgui_tables.cpp",
+            folder_name ++ "/imgui_widgets.cpp",
+            folder_name ++ "/imgui.cpp",
         },
     });
 
